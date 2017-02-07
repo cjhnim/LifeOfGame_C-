@@ -73,7 +73,42 @@ namespace LifeOfGames.Library.Tests
 
             Assert.Throws<ArgumentOutOfRangeException>(() => newState = LifeRules.GetNewState(currentState, liveNeighbors));
 
+        }
 
+        [Test]
+        public void LiveNeighbors_MoreThan8_ThrowArgumenetException()
+        {
+            var currentState = CellState.Alive;
+            var liveNeighbors = 9;
+            var paramName = "liveNeighbors";
+
+            CellState newState;
+            try
+            {
+                newState = LifeRules.GetNewState(currentState, liveNeighbors);
+                Assert.Fail("No exception thrown");
+            }
+            catch (ArgumentOutOfRangeException ex)
+            {
+                if(ex.ParamName != paramName)
+                    Assert.Fail($"Wrong parameter. Expected: '{paramName}', Actual: '{ex.ParamName}'");
+
+                Assert.Pass();
+            }
+        }
+
+        [Test]
+        public void LiveNeighbors_LessThan0_ThrowArgumenetException()
+        {
+            var currentState = CellState.Alive;
+            var liveNeighbors = -1;
+            var paramName = "liveNeighbors";
+
+            var ex = Assert.Throws(
+                Is.TypeOf<ArgumentOutOfRangeException>()
+                .And.Property("ParamName")
+                .EqualTo(paramName),
+                ()=>LifeRules.GetNewState(currentState, liveNeighbors));
         }
     }
 }
